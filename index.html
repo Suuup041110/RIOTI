@@ -208,18 +208,14 @@
             text-align: center;
         }
 
-        .character-avatar {
+        .character-image {
             width: 250px;
             height: 350px;
             margin: 0 auto 30px;
             border-radius: 20px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.3));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: #a5b4fc;
-            border: 3px solid rgba(139, 92, 246, 0.5);
+            object-fit: cover;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
         }
 
         .result-title {
@@ -485,10 +481,9 @@
                 padding: 20px;
             }
             
-            .character-avatar {
-                width: 100px;
-                height: 100px;
-                font-size: 0.8rem;
+            .character-image {
+                width: 120px;
+                height: 160px;
             }
             
             .result-title {
@@ -585,9 +580,7 @@
 
         <div class="page" id="resultPage">
             <div class="result-card">
-                <div class="character-avatar" id="characterAvatar">
-                    动漫风人物照片<br>占位符
-                </div>
+                <img id="characterAvatar" class="character-image" alt="酒格图片">
                 <div class="result-title" id="resultTitle"></div>
                 <div class="cosmic-description" id="cosmicDescription"></div>
                 <div class="result-wine" id="resultWine"></div>
@@ -708,6 +701,7 @@
                 description: '你是内核稳定的独处主义者，像春雪蜜桃伏特加般清甜柔和，低烈度的包裹下是你不喜喧嚣的松弛感。你偏爱独处的丰盈远胜于无效社交，精神世界富足饱满，有着自己坚定的节奏和审美。零糖的纯粹感是你待人接物的底色，不迎合、不盲从，永远活得清醒又自洽。',
                 cosmicDescription: '像一团温柔的粉色星云，自带浪漫滤镜，是宇宙中静谧而美好的存在，为懂它的人提供情绪的避风港。',
                 avatarColor: '#f8b4d9',
+                imagePath: 'RIOTIpersonality/SugarFreeSpringSnowPeachVodka.png',
                 ranges: { E: [1.5, 2.4], S: [1.5, 2.4], W: [1.0, 1.4], C: [1.5, 2.4] }
             },
             { 
@@ -719,6 +713,7 @@
                 description: '你是天生的社交派对动物，像强爽0糖柠檬般够劲够爽，是夜场和派对上的绝对焦点。你热爱刺激、享受聚光灯，永远在寻找下一个让你肾上腺素飙升的体验。你不惧怕风险，反而在挑战中越战越勇，永远活得张扬又尽兴。',
                 cosmicDescription: '如同剧烈而坦荡的超新星，酸得鲜明，亮得彻底。它用一场酣畅淋漓的光芒消解黑暗，是宇宙中清醒且锋利的力量。',
                 avatarColor: '#fff176',
+                imagePath: 'RIOTIpersonality/ZeroSugarLemonVodka.png',
                 ranges: { E: [3.5, 4.4], S: [3.5, 4.4], W: [2.5, 3.4], C: [4.5, 5.0] }
             },
             { 
@@ -730,6 +725,7 @@
                 description: '你是内核稳定的雅致主义者，像翡翠葡萄酒融合乌龙茶香般温润有层次，低烈度的柔和藏着你不喜喧嚣的松弛感。你偏爱独处的丰盈远胜于无效社交，精神世界富足饱满，有着自己坚定的节奏和审美。零糖的纯粹感是你待人接物的底色，不迎合、不盲从，只有和同频的灵魂知己相对时，才会卸下防备，展露最真实的自己。',
                 cosmicDescription: '像一颗在深邃宇宙中独自运转的雅致星球，温润有层次，内核稳定。它享受独处的丰盈，只对极少数同频的灵魂展露真实的地貌。',
                 avatarColor: '#9f7aea',
+                imagePath: 'RIOTIpersonality/SugarFreeEmeraldGrapeVodka.png',
                 ranges: { E: [1.0, 1.4], S: [1.0, 1.4], W: [1.0, 1.4], C: [1.0, 1.4] }
             },
             { 
@@ -741,6 +737,7 @@
                 description: '你是天生的乐天派阳光型人格，像金钻凤梨融合椰子水般自带热带阳光的松弛感，永远能给身边的人带来治愈和快乐。你不爱被条条框框束缚，向往自由随性的生活，对世界永远保持着旺盛的好奇心和探索欲。低烈度的柔和让你有着极强的适配性，能快速和同频的人打成一片，擅长在平凡日子里挖掘出不一样的新鲜乐趣，永远活得鲜活又明媚。',
                 cosmicDescription: '仿佛恒星表面跃动的耀斑，自带热带阳光般的松弛与热量。它永远鲜活明媚，是宇宙中治愈且快乐的能量源。',
                 avatarColor: '#f6ad55',
+                imagePath: 'RIOTIpersonality/SugarFreeGoldenDiamondPineappleVodka.png',
                 ranges: { E: [3.5, 4.4], S: [2.5, 3.4], W: [3.5, 4.4], C: [3.5, 4.4] }
             },
             { 
@@ -752,6 +749,7 @@
                 description: '你是骨子里藏着野性的自由灵魂，像冻顶乌梅酒般既有酒的热烈底色，又有乌梅的酸甜回甘，层次丰富到让人猜不透。你不爱循规蹈矩的生活，向往无拘无束的山野与远方，既能和初识的搭子畅快夜话，也能在独处时与自己和解。你看似随性洒脱，实则内心有着细腻的执念，既扛得住生活的酸涩，也守得住心底的甜，永远在奔赴下一场山海的路上。',
                 cosmicDescription: '如同一对在星际间流浪的双星系统，既有热烈的引力，又有酸甜的回甘。它向往无拘无束的远方，既能与人畅谈，也能与孤独和解。',
                 avatarColor: '#b39ddb',
+                imagePath: 'RIOTIpersonality/SugarFreeDongdingDarkPlumWine.png',
                 ranges: { E: [2.5, 3.4], S: [3.5, 4.4], W: [4.5, 5.0], C: [2.5, 3.4] }
             },
             { 
@@ -763,6 +761,7 @@
                 description: '你是自带超强气场的极致体验派，像巨峰葡萄酒般甜得浓郁、烈得彻底，要么不做，要做就做到极致。你天生爱热闹、重情义，是朋友堆里的气氛担当，永远能把场子炒到最热，对认可的人能掏心掏肺地付出。你敢闯敢拼，从不畏惧未知的挑战，骨子里有着不服输的热血，永远活得张扬又尽兴，人生信条就是活在当下，酣畅淋漓。',
                 cosmicDescription: '像一个巨大的星系漩涡，气场强大，甜得浓郁，吸积物质般聚集着周围的人气。它是朋友堆里的核心，极致、热烈且尽兴。',
                 avatarColor: '#9c27b0',
+                imagePath: 'RIOTIpersonality/KyohoGrapeVodka.png',
                 ranges: { E: [4.5, 5.0], S: [4.5, 5.0], W: [3.5, 4.4], C: [4.5, 5.0] }
             },
             { 
@@ -774,6 +773,7 @@
                 description: '你是自带书卷气的意气风发型人格，像状元红荔枝酒般既有荔枝的馥郁清甜，又有茉莉茶的雅致回甘，骨子里藏着独属于你的风骨与骄傲。你重情重义，更重志同道合的灵魂契合，不爱无效社交，只愿和同频的挚友围坐畅谈，聊理想、聊人生。你对自己有着极高的要求，做事踏实靠谱，既有奔赴前路的一腔热血，也有沉淀下来的温柔细腻，永远心怀热望，步履不停。',
                 cosmicDescription: '仿佛一个古老的球状星团，散发着雅致而恒定的光芒。它重情义、有风骨，只愿与志同道合的星体围坐，在宇宙中保持沉稳的节奏。',
                 avatarColor: '#e91e63',
+                imagePath: 'RIOTIpersonality/ZhuangyuanRedLycheeVodka.png',
                 ranges: { E: [2.5, 3.4], S: [2.5, 3.4], W: [1.5, 2.4], C: [3.5, 4.4] }
             },
             { 
@@ -785,6 +785,7 @@
                 description: '你是永远保有少年感的元气主义者，像苹果西打酒般清爽干净、脆甜鲜活，自带治愈一切的元气感。你心思纯粹，不爱复杂的勾心斗角，待人真诚坦荡，和你相处永远没有负担，像春日的风一样舒服。你热爱生活里的一切小美好，擅长用简单的方式消解烦恼，哪怕是一场短途骑行、一次草坪野餐，都能让你收获满满的快乐，永远保持着对生活最纯粹的热爱。',
                 cosmicDescription: '像行星上那条清晰而治愈的晨昏线，清爽干净，界限分明。它热爱生活中的小美好，用纯粹的光亮消解一切复杂的阴影。',
                 avatarColor: '#8bc34a',
+                imagePath: 'RIOTIpersonality/GoldenCrownAppleCiderVodka.png',
                 ranges: { E: [3.5, 4.4], S: [1.5, 2.4], W: [3.5, 4.4], C: [2.5, 3.4] }
             },
             { 
@@ -796,6 +797,7 @@
                 description: '你是高情商的百搭型人格，像柠檬伏特加搭配雪碧般酸甜平衡、适配度拉满，不管在什么场合都能游刃有余。你性格随和温润，没有尖锐的棱角，待人接物周到妥帖，上能和长辈畅谈家常，下能和同辈玩到一起，是亲友圈里公认的"暖心担当"。你不爱出风头，却总能在细节处照顾到所有人的情绪，看似平凡随和，实则有着极高的共情力和处事智慧，永远是圈子里最让人安心的存在。',
                 cosmicDescription: '如同宇宙中的引力透镜，温润地弯曲光线，包容并适配一切。它没有尖锐的棱角，却能巧妙地照顾到所有经过的星体，是宇宙中最安心的"暖心担当"。',
                 avatarColor: '#ffeb3b',
+                imagePath: 'RIOTIpersonality/LemonVodka.png',
                 ranges: { E: [2.5, 3.4], S: [1.5, 2.4], W: [4.5, 5.0], C: [2.5, 3.4] }
             },
             { 
@@ -807,6 +809,7 @@
                 description: '你是自带极致反差感的甜酷型人格，外表像白桃汽水般软甜无害，内里却藏着五星烈度的强大内核，没人能轻易看透你的全部。你对外人保持着礼貌的距离感，只有在最信任的核心闺蜜面前，才会卸下所有伪装，展露最疯最真实的一面。你看似软糯好说话，实则底线清晰、原则性极强，一旦触碰你的红线，就会见识到你骨子里的狠劲，可甜可飒，永远不被定义。',
                 cosmicDescription: '表面如普通星云般软甜无害，内里却隐藏着五星烈度的暗物质核心。它拥有极致的反差感，看似随和，实则拥有不被定义的强大引力。',
                 avatarColor: '#f48fb1',
+                imagePath: 'RIOTIpersonality/WhitePeachVodka.png',
                 ranges: { E: [1.5, 2.4], S: [4.5, 5.0], W: [1.0, 1.4], C: [3.5, 4.4] }
             },
             { 
@@ -818,6 +821,7 @@
                 description: '你是自带清冷灵气的通透主义者，像茉莉融合青提的酒香般清雅干净、细腻通透，有着独属于自己的精神审美和浪漫。你不爱世俗的喧嚣与浮躁，偏爱有质感、有灵魂的交流，只有和同频的文艺搭子相对时，才能找到灵魂的共鸣。你心思细腻敏感，能捕捉到生活里被人忽略的小美好，看似清冷疏离，实则内心温柔柔软，始终在浮躁的世界里，守着自己的一方澄澈天地。',
                 cosmicDescription: '仿佛宇宙中一缕清冷的星尘，带着茉莉与青提的香气，在浮躁的星海中保持澄澈。它只与同频的文艺星体产生灵魂的共鸣与回响。',
                 avatarColor: '#81d4fa',
+                imagePath: 'RIOTIpersonality/JasmineGreenGrapeVodka.png',
                 ranges: { E: [1.5, 2.4], S: [1.5, 2.4], W: [1.5, 2.4], C: [1.0, 1.4] }
             }
         ];
@@ -945,8 +949,7 @@
                 matchedPersonality = personalityTypes[0];
             }
 
-            document.getElementById('characterAvatar').style.background = `linear-gradient(135deg, ${matchedPersonality.avatarColor}40, ${matchedPersonality.avatarColor}20)`;
-            document.getElementById('characterAvatar').style.borderColor = matchedPersonality.avatarColor;
+            document.getElementById('characterAvatar').src = matchedPersonality.imagePath;
             document.getElementById('resultTitle').textContent = matchedPersonality.title;
             document.getElementById('cosmicDescription').textContent = matchedPersonality.cosmicDescription;
             document.getElementById('resultWine').innerHTML = `🍷 ${matchedPersonality.wine}<br>📍 ${matchedPersonality.scene}<br>👥 ${matchedPersonality.target}`;
