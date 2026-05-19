@@ -713,7 +713,7 @@
                 description: '你是天生的社交派对动物，像强爽0糖柠檬般够劲够爽，是夜场和派对上的绝对焦点。你热爱刺激、享受聚光灯，永远在寻找下一个让你肾上腺素飙升的体验。你不惧怕风险，反而在挑战中越战越勇，永远活得张扬又尽兴。',
                 cosmicDescription: '如同剧烈而坦荡的超新星，酸得鲜明，亮得彻底。它用一场酣畅淋漓的光芒消解黑暗，是宇宙中清醒且锋利的力量。',
                 avatarColor: '#fff176',
-                imagePath: 'RIOTIpersonality/ZeroSugarLemonVodka.png',
+                imagePath: 'RIOTIpersonality/ZeroSugarLemon.png',
                 ranges: { E: [3.5, 4.4], S: [3.5, 4.4], W: [2.5, 3.4], C: [4.5, 5.0] }
             },
             { 
@@ -929,18 +929,18 @@
             };
 
             let matchedPersonality = null;
-            let maxMatchScore = 0;
+            let minDistance = Infinity;
 
             personalityTypes.forEach(personality => {
-                let matchScore = 0;
+                let totalDistance = 0;
                 ['E', 'S', 'W', 'C'].forEach(dim => {
                     const range = personality.ranges[dim];
-                    if (parseFloat(dimensionAverages[dim]) >= range[0] && parseFloat(dimensionAverages[dim]) <= range[1]) {
-                        matchScore++;
-                    }
+                    const avgScore = parseFloat(dimensionAverages[dim]);
+                    const rangeCenter = (range[0] + range[1]) / 2;
+                    totalDistance += Math.abs(avgScore - rangeCenter);
                 });
-                if (matchScore > maxMatchScore) {
-                    maxMatchScore = matchScore;
+                if (totalDistance < minDistance) {
+                    minDistance = totalDistance;
                     matchedPersonality = personality;
                 }
             });
