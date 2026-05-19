@@ -37,9 +37,87 @@
             animation: twinkle 2s infinite;
         }
 
-        @keyframes twinkle {
+        @keyframes introTwinkle {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }
+        }
+        
+        /* 右侧功能按钮 */
+        .side-controls {
+            position: fixed;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .control-btn {
+            width: auto;
+            min-width: 50px;
+            height: 50px;
+            padding: 0 20px;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            background: rgba(139, 92, 246, 0.3);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-size: 1rem;
+        }
+        
+        .btn-text {
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+        
+        .control-btn:hover {
+            background: rgba(139, 92, 246, 0.5);
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: scale(1.05);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .control-btn.playing {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: rgba(255, 215, 0, 0.8);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+        }
+        
+        .control-btn.hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .side-controls {
+                left: 50%;
+                right: auto;
+                bottom: 20px;
+                transform: translateX(-50%);
+                gap: 15px;
+            }
+            
+            .control-btn {
+                min-width: auto;
+                height: 45px;
+                padding: 0 15px;
+                font-size: 0.9rem;
+            }
         }
    
         .content-frame {
@@ -885,6 +963,68 @@
             }
         ];
 
+        // 音乐控制
+        let isPlaying = false;
+        let musicInitialized = false;
+        
+        function toggleMusic() {
+            const bgm = document.getElementById('bgm');
+            const musicBtn = document.getElementById('musicBtn');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicText = document.getElementById('musicText');
+            
+            if (!bgm) return;
+            
+            if (isPlaying) {
+                bgm.pause();
+                musicBtn.classList.remove('playing');
+                musicIcon.textContent = '🎵';
+                musicText.textContent = '音乐';
+            } else {
+                bgm.play().catch(e => console.log('Play error'));
+                musicBtn.classList.add('playing');
+                musicIcon.textContent = '🎶';
+                musicText.textContent = '暂停';
+            }
+            isPlaying = !isPlaying;
+        }
+        
+        // 用户首次点击页面时尝试播放音乐
+        function initMusicOnInteraction() {
+            if (!musicInitialized) {
+                musicInitialized = true;
+                const bgm = document.getElementById('bgm');
+                const musicBtn = document.getElementById('musicBtn');
+                const musicIcon = document.getElementById('musicIcon');
+                const musicText = document.getElementById('musicText');
+                
+                if (!bgm) return;
+                
+                bgm.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add('playing');
+                    musicIcon.textContent = '🎶';
+                    musicText.textContent = '暂停';
+                }).catch(e => {
+                    console.log('Auto-play blocked');
+                    isPlaying = false;
+                });
+            }
+        }
+        
+        // 监听用户首次交互来启动音乐
+        document.addEventListener('click', initMusicOnInteraction, { once: true });
+        document.addEventListener('touchstart', initMusicOnInteraction, { once: true });
+        
+        // 上一题功能
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+                updateProgress();
+            }
+        }
+
         let currentQuestion = 0;
         let answers = {};
 
@@ -912,6 +1052,8 @@
             document.getElementById('progressContainer').style.display = 'block';
             document.getElementById('floatingCharacters').style.display = 'none';
             document.getElementById('flashlightBeam').style.display = 'none';
+            document.getElementById('prevBtn').classList.remove('hidden');
+            document.getElementById('musicBtn').classList.remove('hidden');
 
             showQuestion();
         }
@@ -1086,10 +1228,31 @@
             document.getElementById('homePage').classList.add('active');
             document.getElementById('floatingCharacters').style.display = 'block';
             document.getElementById('flashlightBeam').style.display = 'block';
+            document.getElementById('prevBtn').classList.add('hidden');
+            document.getElementById('musicBtn').classList.add('hidden');
 
         }
 
         createStars();
+        
+        // 初始化隐藏答题页面的按钮
+        document.getElementById('prevBtn').classList.add('hidden');
+        document.getElementById('musicBtn').classList.add('hidden');
     </script>
 </body>
+    
+    <audio id="bgm" loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+    
+    <div class="side-controls">
+        <button class="control-btn hidden" id="prevBtn" onclick="prevQuestion()" title="上一题">
+            <span class="btn-icon">←</span>
+            <span class="btn-text">上一题</span>
+        </button>
+        <button class="control-btn hidden" id="musicBtn" onclick="toggleMusic()" title="音乐开关">
+            <span class="btn-icon" id="musicIcon">🎵</span>
+            <span class="btn-text" id="musicText">音乐</span>
+        </button>
+    </div>
 </html>
