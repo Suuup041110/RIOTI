@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIO TI——你的专属酒格</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+   
+        .content-frame {
+            background: rgba(243, 220, 129, 0.1);
+            border: 2px solid rgba(251, 223, 148, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .brand-logo {
+            max-width: 200px;
+            margin-bottom: 30px;
+        }
+
+        .title-img {
+            max-width: 600px;
+            margin: 30px 0;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #a855f7, #6366f1, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 600px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.6);
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 600px;
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #6366f1, #ffd700);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-indicator {
+            position: absolute;
+            top: -15px;
+            left: 0;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            transition: left 0.5s ease;
+            z-index: 10;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+        }
+
+        .question-number {
+            font-size: 1rem;
+            color: #a5b4fc;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #8b5cf6;
+        }
+
+        .option.selected {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: #8b5cf6;
+        }
+
+        .result-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .character-avatar {
+            width: 250px;
+            height: 350px;
+            margin: 0 auto 30px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #a5b4fc;
+            border: 3px solid rgba(139, 92, 246, 0.5);
+        }
+
+        .result-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #a855f7, #6366f1, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cosmic-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #c0c0c0;
+            background: linear-gradient(135deg, rgba(100, 100, 150, 0.3), rgba(80, 80, 120, 0.2));
+            border: 1px solid rgba(200, 200, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .result-wine {
+            font-size: 1.5rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .result-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+
+        .restart-btn {
+            margin-top: 30px;
+        }
+
+        .floating-characters {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .flashlight-beam {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 700px;
+            height: 800px;
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 248, 220, 0.4) 0%,
+                rgba(255, 240, 200, 0.3) 20%,
+                rgba(255, 230, 180, 0.2) 40%,
+                rgba(255, 220, 160, 0.1) 60%,
+                rgba(255, 210, 140, 0.05) 80%,
+                rgba(255, 200, 120, 0) 100%
+            );
+            clip-path: polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%);
+            pointer-events: none;
+            z-index: 60;
+            animation: beamPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes beamPulse {
+            0%, 100% {
+                opacity: 0.8;
+                filter: blur(2px);
+            }
+            50% {
+                opacity: 1;
+                filter: blur(1px);
+            }
+        }
+
+
+        .float-card {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(100, 100, 150, 0.4), rgba(80, 80, 120, 0.2));
+            border: 1px solid rgba(200, 200, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.75rem;
+            color: #e0e0e0;
+            backdrop-filter: blur(5px);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .float-card .wine-name {
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 4px;
+        }
+
+        .float-card .cosmic-name {
+            font-style: italic;
+            color: #b0b0d0;
+            font-size: 0.65rem;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+            50% { transform: translateY(-20px) rotate(2deg); opacity: 0.9; }
+        }
+
+        .float-card:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
+        .float-card:nth-child(2) { top: 15%; right: 8%; animation-delay: 0.5s; }
+        .float-card:nth-child(3) { top: 30%; left: 3%; animation-delay: 1s; }
+        .float-card:nth-child(4) { top: 40%; right: 5%; animation-delay: 1.5s; }
+        .float-card:nth-child(5) { top: 55%; left: 8%; animation-delay: 2s; }
+        .float-card:nth-child(6) { top: 65%; right: 10%; animation-delay: 2.5s; }
+        .float-card:nth-child(7) { top: 75%; left: 5%; animation-delay: 3s; }
+        .float-card:nth-child(8) { top: 20%; left: 15%; animation-delay: 3.5s; }
+        .float-card:nth-child(9) { top: 50%; right: 15%; animation-delay: 4s; }
+        .float-card:nth-child(10) { top: 80%; right: 5%; animation-delay: 4.5s; }
+        .float-card:nth-child(11) { top: 25%; right: 20%; animation-delay: 5s; }
+
+        .dimensions-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(100, 100, 150, 0.2);
+            border-radius: 12px;
+            border: 1px solid rgba(200, 200, 255, 0.2);
+        }
+
+        .dimensions-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .dimension-item {
+            margin-bottom: 25px;
+        }
+
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dimension-name {
+            font-weight: bold;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .dimension-score {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 1rem;
+        }
+
+        .dimension-axis {
+            position: relative;
+            height: 8px;
+            background: rgba(100, 100, 150, 0.5);
+            border-radius: 4px;
+            overflow: visible;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #a855f7);
+            border-radius: 4px;
+            transition: width 0.8s ease-out;
+        }
+
+        .dimension-marker {
+            position: absolute;
+            top: -5px;
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+            transition: left 0.8s ease-out;
+        }
+
+        .dimension-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: #a0a0c0;
+        }
+
+        .dimension-description {
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(80, 80, 120, 0.3);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #d0d0e0;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .question-text { font-size: 1.2rem; }
+            .question-card, .result-card { padding: 25px; }
+            .float-card { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    <div class="progress-container" id="progressContainer" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-indicator" id="progressIndicator">🌟</div>
+    </div>
+
+    <div class="container">
+        <div class="flashlight-beam" id="flashlightBeam"></div>
+
+        <div class="floating-characters" id="floatingCharacters">
+            <div class="float-card"><div class="wine-name">零糖春雪蜜桃伏特加</div><div class="cosmic-name">「星云漫游者」</div></div>
+            <div class="float-card"><div class="wine-name">强爽 0 糖柠檬</div><div class="cosmic-name">「超新星爆发」</div></div>
+            <div class="float-card"><div class="wine-name">零糖翡翠葡萄伏特加</div><div class="cosmic-name">「深空独行星」</div></div>
+            <div class="float-card"><div class="wine-name">零糖金钻凤梨伏特加</div><div class="cosmic-name">「恒星耀斑」</div></div>
+            <div class="float-card"><div class="wine-name">零糖冻顶乌梅酒</div><div class="cosmic-name">「流浪双星」</div></div>
+            <div class="float-card"><div class="wine-name">巨峰葡萄伏特加</div><div class="cosmic-name">「星系漩涡」</div></div>
+            <div class="float-card"><div class="wine-name">状元红荔枝伏特加</div><div class="cosmic-name">「古典星团」</div></div>
+            <div class="float-card"><div class="wine-name">金冠苹果西打伏特加</div><div class="cosmic-name">「晨昏线」</div></div>
+            <div class="float-card"><div class="wine-name">柠檬伏特加</div><div class="cosmic-name">「引力透镜」</div></div>
+            <div class="float-card"><div class="wine-name">白桃伏特加</div><div class="cosmic-name">「暗物质核心」</div></div>
+            <div class="float-card"><div class="wine-name">茉莉青提伏特加</div><div class="cosmic-name">「星尘回响」</div></div>
+        </div>
+
+        <div class="page active" id="homePage">
+                <img src="title1.png" alt="RIO TI——你的专属酒格" class="title-img">
+                <div class="content-frame">
+                <p class="subtitle">
+                    共 20 道题目，请根据您的真实想法与日常行为选择最符合的选项
+                    <br>
+                    无需过度思考
+                    <br>
+                    每道题固定 5 个选项，从非常不同意到非常同意
+                </p>
+                <button class="btn" onclick="startQuiz()">开始测试</button>
+                </div>
+        </div>
+
+        <div class="page" id="quizPage">
+            <div class="question-card">
+                <div class="question-number" id="questionNumber">第 1 题 / 共 20 题</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+        </div>
+
+        <div class="page" id="resultPage">
+            <div class="result-card">
+                <div class="character-avatar" id="characterAvatar">
+                    动漫风人物照片<br>占位符
+                </div>
+                <div class="result-title" id="resultTitle"></div>
+                <div class="cosmic-description" id="cosmicDescription"></div>
+                <div class="result-wine" id="resultWine"></div>
+                <div class="result-description" id="resultDescription"></div>
+                
+                <div class="dimensions-section" id="dimensionsSection">
+                    <div class="dimensions-title">🌟 你的四维性格画像</div>
+                    
+                    <div class="dimension-item">
+                        <div class="dimension-header">
+                            <span class="dimension-name">E - 社交能量取向</span>
+                            <span class="dimension-score" id="scoreE">0</span>
+                        </div>
+                        <div class="dimension-axis">
+                            <div class="dimension-fill" id="fillE"></div>
+                            <div class="dimension-marker" id="markerE"></div>
+                        </div>
+                        <div class="dimension-labels">
+                            <span>内倾能量</span>
+                            <span>外倾能量</span>
+                        </div>
+                        <div class="dimension-description" id="descE"></div>
+                    </div>
+                    
+                    <div class="dimension-item">
+                        <div class="dimension-header">
+                            <span class="dimension-name">S - 刺激耐受水平</span>
+                            <span class="dimension-score" id="scoreS">0</span>
+                        </div>
+                        <div class="dimension-axis">
+                            <div class="dimension-fill" id="fillS"></div>
+                            <div class="dimension-marker" id="markerS"></div>
+                        </div>
+                        <div class="dimension-labels">
+                            <span>低耐受</span>
+                            <span>高耐受</span>
+                        </div>
+                        <div class="dimension-description" id="descS"></div>
+                    </div>
+                    
+                    <div class="dimension-item">
+                        <div class="dimension-header">
+                            <span class="dimension-name">W - 人际圈层宽度</span>
+                            <span class="dimension-score" id="scoreW">0</span>
+                        </div>
+                        <div class="dimension-axis">
+                            <div class="dimension-fill" id="fillW"></div>
+                            <div class="dimension-marker" id="markerW"></div>
+                        </div>
+                        <div class="dimension-labels">
+                            <span>窄圈层</span>
+                            <span>广圈层</span>
+                        </div>
+                        <div class="dimension-description" id="descW"></div>
+                    </div>
+                    
+                    <div class="dimension-item">
+                        <div class="dimension-header">
+                            <span class="dimension-name">C - 情绪表达模式</span>
+                            <span class="dimension-score" id="scoreC">0</span>
+                        </div>
+                        <div class="dimension-axis">
+                            <div class="dimension-fill" id="fillC"></div>
+                            <div class="dimension-marker" id="markerC"></div>
+                        </div>
+                        <div class="dimension-labels">
+                            <span>内向表达</span>
+                            <span>外向表达</span>
+                        </div>
+                        <div class="dimension-description" id="descC"></div>
+                    </div>
+                </div>
+                
+                <button class="btn restart-btn" onclick="restartQuiz()">再测一次</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { dimension: 'E', text: '结束一周忙碌的工作 / 学习后，和朋友聚会狂欢比独自在家休息更能让我恢复精力。' },
+            { dimension: 'E', text: '参加人数较多的社交活动后，我通常会感到精力充沛，而非疲惫耗竭。' },
+            { dimension: 'E', text: '我更愿意通过和他人面对面交流的方式，而非独自思考来梳理自己的想法与困惑。' },
+            { dimension: 'E', text: '休闲时间里，我更倾向于安排外出社交活动，而非独自居家放松。' },
+            { dimension: 'E', text: '在陌生的社交场合，我会主动和他人搭话，并且享受这个认识新朋友的过程。' },
+            { dimension: 'S', text: '我乐于尝试从未体验过的极限运动、小众旅行路线等新鲜未知的事物。' },
+            { dimension: 'S', text: '在休闲娱乐中，我偏爱节奏强烈、充满不确定性的项目，而非平缓稳定的活动。' },
+            { dimension: 'S', text: '选择酒类饮品时，我更偏爱酒精度高、上头感强的类型，而非低度数的柔和饮品。' },
+            { dimension: 'S', text: '我享受生活中的突发变化，而非严格按照既定计划行事。' },
+            { dimension: 'S', text: '面对带有一定风险的挑战时，我会感到兴奋而非焦虑，愿意主动尝试。' },
+            { dimension: 'W', text: '我很容易和刚认识的人找到共同话题，并且愿意和他们成为一起玩的搭子。' },
+            { dimension: 'W', text: '外出旅行 / 参加线下活动时，我不介意和完全陌生的人结伴同行，享受随机社交的乐趣。' },
+            { dimension: 'W', text: '我的社交圈非常多元，能和不同年龄、不同圈层、不同性格的人融洽相处。' },
+            { dimension: 'W', text: '选择喝酒的同伴时，我不局限于熟悉的好友，和新认识的朋友小酌也会很开心。' },
+            { dimension: 'W', text: '我不喜欢给社交关系设限，认为不管是核心密友还是泛泛之交，都能带来不同的快乐。' },
+            { dimension: 'C', text: '开心或难过的时候，我会第一时间把自己的情绪直白地表达给身边的人。' },
+            { dimension: 'C', text: '我习惯把情绪写在脸上，身边的人很容易就能看出我的心情变化。' },
+            { dimension: 'C', text: '和朋友小酌微醺后，我会更愿意把藏在心里的想法和情绪直接说出来。' },
+            { dimension: 'C', text: '遇到不满的事情时，我会直接表达自己的态度，而非默默隐忍消化。' },
+            { dimension: 'C', text: '我更愿意用外放的方式宣泄情绪，而非独自向内消化处理。' }
+        ];
+
+        const options = [
+            { text: '非常不同意', score: 1 },
+            { text: '比较不同意', score: 2 },
+            { text: '中立', score: 3 },
+            { text: '比较同意', score: 4 },
+            { text: '非常同意', score: 5 }
+        ];
+
+        const personalityTypes = [
+            { 
+                id: 1, 
+                title: '星云漫游者', 
+                wine: '零糖春雪蜜桃伏特加', 
+                scene: '深夜便利店独酌', 
+                target: '自我独处限定',
+                description: '你是内核稳定的独处主义者，像春雪蜜桃伏特加般清甜柔和，低烈度的包裹下是你不喜喧嚣的松弛感。你偏爱独处的丰盈远胜于无效社交，精神世界富足饱满，有着自己坚定的节奏和审美。零糖的纯粹感是你待人接物的底色，不迎合、不盲从，永远活得清醒又自洽。',
+                cosmicDescription: '像一团温柔的粉色星云，自带浪漫滤镜，是宇宙中静谧而美好的存在，为懂它的人提供情绪的避风港。',
+                avatarColor: '#f8b4d9',
+                ranges: { E: [1.5, 2.4], S: [1.5, 2.4], W: [1.0, 1.4], C: [1.5, 2.4] }
+            },
+            { 
+                id: 2, 
+                title: '超新星爆发', 
+                wine: '强爽 0 糖柠檬', 
+                scene: '深夜酒吧纯饮', 
+                target: '夜场老手',
+                description: '你是天生的社交派对动物，像强爽0糖柠檬般够劲够爽，是夜场和派对上的绝对焦点。你热爱刺激、享受聚光灯，永远在寻找下一个让你肾上腺素飙升的体验。你不惧怕风险，反而在挑战中越战越勇，永远活得张扬又尽兴。',
+                cosmicDescription: '如同剧烈而坦荡的超新星，酸得鲜明，亮得彻底。它用一场酣畅淋漓的光芒消解黑暗，是宇宙中清醒且锋利的力量。',
+                avatarColor: '#fff176',
+                ranges: { E: [3.5, 4.4], S: [3.5, 4.4], W: [2.5, 3.4], C: [4.5, 5.0] }
+            },
+            { 
+                id: 3, 
+                title: '深空独行星', 
+                wine: '零糖翡翠葡萄伏特加', 
+                scene: '午后阳台读书配酒', 
+                target: '自我独处 & 灵魂知己限定',
+                description: '你是内核稳定的雅致主义者，像翡翠葡萄酒融合乌龙茶香般温润有层次，低烈度的柔和藏着你不喜喧嚣的松弛感。你偏爱独处的丰盈远胜于无效社交，精神世界富足饱满，有着自己坚定的节奏和审美。零糖的纯粹感是你待人接物的底色，不迎合、不盲从，只有和同频的灵魂知己相对时，才会卸下防备，展露最真实的自己。',
+                cosmicDescription: '像一颗在深邃宇宙中独自运转的雅致星球，温润有层次，内核稳定。它享受独处的丰盈，只对极少数同频的灵魂展露真实的地貌。',
+                avatarColor: '#9f7aea',
+                ranges: { E: [1.0, 1.4], S: [1.0, 1.4], W: [1.0, 1.4], C: [1.0, 1.4] }
+            },
+            { 
+                id: 4, 
+                title: '恒星耀斑', 
+                wine: '零糖金钻凤梨伏特加', 
+                scene: '海边沙滩落日派对', 
+                target: '同好玩伴',
+                description: '你是天生的乐天派阳光型人格，像金钻凤梨融合椰子水般自带热带阳光的松弛感，永远能给身边的人带来治愈和快乐。你不爱被条条框框束缚，向往自由随性的生活，对世界永远保持着旺盛的好奇心和探索欲。低烈度的柔和让你有着极强的适配性，能快速和同频的人打成一片，擅长在平凡日子里挖掘出不一样的新鲜乐趣，永远活得鲜活又明媚。',
+                cosmicDescription: '仿佛恒星表面跃动的耀斑，自带热带阳光般的松弛与热量。它永远鲜活明媚，是宇宙中治愈且快乐的能量源。',
+                avatarColor: '#f6ad55',
+                ranges: { E: [3.5, 4.4], S: [2.5, 3.4], W: [3.5, 4.4], C: [3.5, 4.4] }
+            },
+            { 
+                id: 5, 
+                title: '流浪双星', 
+                wine: '零糖冻顶乌梅酒', 
+                scene: '山野露营篝火夜话', 
+                target: '随性搭子',
+                description: '你是骨子里藏着野性的自由灵魂，像冻顶乌梅酒般既有酒的热烈底色，又有乌梅的酸甜回甘，层次丰富到让人猜不透。你不爱循规蹈矩的生活，向往无拘无束的山野与远方，既能和初识的搭子畅快夜话，也能在独处时与自己和解。你看似随性洒脱，实则内心有着细腻的执念，既扛得住生活的酸涩，也守得住心底的甜，永远在奔赴下一场山海的路上。',
+                cosmicDescription: '如同一对在星际间流浪的双星系统，既有热烈的引力，又有酸甜的回甘。它向往无拘无束的远方，既能与人畅谈，也能与孤独和解。',
+                avatarColor: '#b39ddb',
+                ranges: { E: [2.5, 3.4], S: [3.5, 4.4], W: [4.5, 5.0], C: [2.5, 3.4] }
+            },
+            { 
+                id: 6, 
+                title: '星系漩涡', 
+                wine: '巨峰葡萄伏特加', 
+                scene: '跨年狂欢通宵派对', 
+                target: '热血死党',
+                description: '你是自带超强气场的极致体验派，像巨峰葡萄酒般甜得浓郁、烈得彻底，要么不做，要做就做到极致。你天生爱热闹、重情义，是朋友堆里的气氛担当，永远能把场子炒到最热，对认可的人能掏心掏肺地付出。你敢闯敢拼，从不畏惧未知的挑战，骨子里有着不服输的热血，永远活得张扬又尽兴，人生信条就是活在当下，酣畅淋漓。',
+                cosmicDescription: '像一个巨大的星系漩涡，气场强大，甜得浓郁，吸积物质般聚集着周围的人气。它是朋友堆里的核心，极致、热烈且尽兴。',
+                avatarColor: '#9c27b0',
+                ranges: { E: [4.5, 5.0], S: [4.5, 5.0], W: [3.5, 4.4], C: [4.5, 5.0] }
+            },
+            { 
+                id: 7, 
+                title: '古典星团', 
+                wine: '状元红荔枝伏特加', 
+                scene: '国风庭院好友雅聚', 
+                target: '志同道合挚友',
+                description: '你是自带书卷气的意气风发型人格，像状元红荔枝酒般既有荔枝的馥郁清甜，又有茉莉茶的雅致回甘，骨子里藏着独属于你的风骨与骄傲。你重情重义，更重志同道合的灵魂契合，不爱无效社交，只愿和同频的挚友围坐畅谈，聊理想、聊人生。你对自己有着极高的要求，做事踏实靠谱，既有奔赴前路的一腔热血，也有沉淀下来的温柔细腻，永远心怀热望，步履不停。',
+                cosmicDescription: '仿佛一个古老的球状星团，散发着雅致而恒定的光芒。它重情义、有风骨，只愿与志同道合的星体围坐，在宇宙中保持沉稳的节奏。',
+                avatarColor: '#e91e63',
+                ranges: { E: [2.5, 3.4], S: [2.5, 3.4], W: [1.5, 2.4], C: [3.5, 4.4] }
+            },
+            { 
+                id: 8, 
+                title: '晨昏线', 
+                wine: '金冠苹果西打伏特加', 
+                scene: '周末草坪骑行野餐', 
+                target: '轻松玩伴',
+                description: '你是永远保有少年感的元气主义者，像苹果西打酒般清爽干净、脆甜鲜活，自带治愈一切的元气感。你心思纯粹，不爱复杂的勾心斗角，待人真诚坦荡，和你相处永远没有负担，像春日的风一样舒服。你热爱生活里的一切小美好，擅长用简单的方式消解烦恼，哪怕是一场短途骑行、一次草坪野餐，都能让你收获满满的快乐，永远保持着对生活最纯粹的热爱。',
+                cosmicDescription: '像行星上那条清晰而治愈的晨昏线，清爽干净，界限分明。它热爱生活中的小美好，用纯粹的光亮消解一切复杂的阴影。',
+                avatarColor: '#8bc34a',
+                ranges: { E: [3.5, 4.4], S: [1.5, 2.4], W: [3.5, 4.4], C: [2.5, 3.4] }
+            },
+            { 
+                id: 9, 
+                title: '引力透镜', 
+                wine: '柠檬伏特加', 
+                scene: '日常亲友家庭聚餐', 
+                target: '全年龄段亲友',
+                description: '你是高情商的百搭型人格，像柠檬伏特加搭配雪碧般酸甜平衡、适配度拉满，不管在什么场合都能游刃有余。你性格随和温润，没有尖锐的棱角，待人接物周到妥帖，上能和长辈畅谈家常，下能和同辈玩到一起，是亲友圈里公认的"暖心担当"。你不爱出风头，却总能在细节处照顾到所有人的情绪，看似平凡随和，实则有着极高的共情力和处事智慧，永远是圈子里最让人安心的存在。',
+                cosmicDescription: '如同宇宙中的引力透镜，温润地弯曲光线，包容并适配一切。它没有尖锐的棱角，却能巧妙地照顾到所有经过的星体，是宇宙中最安心的"暖心担当"。',
+                avatarColor: '#ffeb3b',
+                ranges: { E: [2.5, 3.4], S: [1.5, 2.4], W: [4.5, 5.0], C: [2.5, 3.4] }
+            },
+            { 
+                id: 10, 
+                title: '暗物质核心', 
+                wine: '白桃伏特加', 
+                scene: '闺蜜私密生日轰趴', 
+                target: '核心闺蜜团',
+                description: '你是自带极致反差感的甜酷型人格，外表像白桃汽水般软甜无害，内里却藏着五星烈度的强大内核，没人能轻易看透你的全部。你对外人保持着礼貌的距离感，只有在最信任的核心闺蜜面前，才会卸下所有伪装，展露最疯最真实的一面。你看似软糯好说话，实则底线清晰、原则性极强，一旦触碰你的红线，就会见识到你骨子里的狠劲，可甜可飒，永远不被定义。',
+                cosmicDescription: '表面如普通星云般软甜无害，内里却隐藏着五星烈度的暗物质核心。它拥有极致的反差感，看似随和，实则拥有不被定义的强大引力。',
+                avatarColor: '#f48fb1',
+                ranges: { E: [1.5, 2.4], S: [4.5, 5.0], W: [1.0, 1.4], C: [3.5, 4.4] }
+            },
+            { 
+                id: 11, 
+                title: '星尘回响', 
+                wine: '茉莉青提伏特加', 
+                scene: '露台星空清吧小聚', 
+                target: '同频文艺搭子',
+                description: '你是自带清冷灵气的通透主义者，像茉莉融合青提的酒香般清雅干净、细腻通透，有着独属于自己的精神审美和浪漫。你不爱世俗的喧嚣与浮躁，偏爱有质感、有灵魂的交流，只有和同频的文艺搭子相对时，才能找到灵魂的共鸣。你心思细腻敏感，能捕捉到生活里被人忽略的小美好，看似清冷疏离，实则内心温柔柔软，始终在浮躁的世界里，守着自己的一方澄澈天地。',
+                cosmicDescription: '仿佛宇宙中一缕清冷的星尘，带着茉莉与青提的香气，在浮躁的星海中保持澄澈。它只与同频的文艺星体产生灵魂的共鸣与回响。',
+                avatarColor: '#81d4fa',
+                ranges: { E: [1.5, 2.4], S: [1.5, 2.4], W: [1.5, 2.4], C: [1.0, 1.4] }
+            }
+        ];
+
+        let currentQuestion = 0;
+        let answers = {};
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        
+
+        function startQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            document.getElementById('homePage').classList.remove('active');
+            document.getElementById('quizPage').classList.add('active');
+            document.getElementById('progressContainer').style.display = 'block';
+            document.getElementById('floatingCharacters').style.display = 'none';
+            document.getElementById('flashlightBeam').style.display = 'none';
+
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = `第 ${currentQuestion + 1} 题 / 共 20 题`;
+            document.getElementById('questionText').textContent = question.text;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                if (answers[currentQuestion] === index) {
+                    optionDiv.classList.add('selected');
+                }
+                optionDiv.textContent = option.text;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) {
+                    opt.classList.add('selected');
+                }
+            });
+
+            setTimeout(() => {
+                if (currentQuestion < 19) {
+                    currentQuestion++;
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / 20) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressIndicator').style.left = progress + '%';
+        }
+
+        function showResult() {
+            document.getElementById('quizPage').classList.remove('active');
+            document.getElementById('progressContainer').style.display = 'none';
+            document.getElementById('resultPage').classList.add('active');
+
+            let dimensionScores = { E: 0, S: 0, W: 0, C: 0 };
+            let dimensionCounts = { E: 0, S: 0, W: 0, C: 0 };
+
+            questions.forEach((q, i) => {
+                if (answers[i] !== undefined) {
+                    dimensionScores[q.dimension] += options[answers[i]].score;
+                    dimensionCounts[q.dimension]++;
+                }
+            });
+
+            let dimensionAverages = {
+                E: (dimensionScores.E / dimensionCounts.E).toFixed(1),
+                S: (dimensionScores.S / dimensionCounts.S).toFixed(1),
+                W: (dimensionScores.W / dimensionCounts.W).toFixed(1),
+                C: (dimensionScores.C / dimensionCounts.C).toFixed(1)
+            };
+
+            let matchedPersonality = null;
+            let maxMatchScore = 0;
+
+            personalityTypes.forEach(personality => {
+                let matchScore = 0;
+                ['E', 'S', 'W', 'C'].forEach(dim => {
+                    const range = personality.ranges[dim];
+                    if (parseFloat(dimensionAverages[dim]) >= range[0] && parseFloat(dimensionAverages[dim]) <= range[1]) {
+                        matchScore++;
+                    }
+                });
+                if (matchScore > maxMatchScore) {
+                    maxMatchScore = matchScore;
+                    matchedPersonality = personality;
+                }
+            });
+
+            if (!matchedPersonality) {
+                matchedPersonality = personalityTypes[0];
+            }
+
+            document.getElementById('characterAvatar').style.background = `linear-gradient(135deg, ${matchedPersonality.avatarColor}40, ${matchedPersonality.avatarColor}20)`;
+            document.getElementById('characterAvatar').style.borderColor = matchedPersonality.avatarColor;
+            document.getElementById('resultTitle').textContent = matchedPersonality.title;
+            document.getElementById('cosmicDescription').textContent = matchedPersonality.cosmicDescription;
+            document.getElementById('resultWine').innerHTML = `🍷 ${matchedPersonality.wine}<br>📍 ${matchedPersonality.scene}<br>👥 ${matchedPersonality.target}`;
+            document.getElementById('resultDescription').textContent = matchedPersonality.description;
+
+            updateDimensionDisplay('E', dimensionAverages.E);
+            updateDimensionDisplay('S', dimensionAverages.S);
+            updateDimensionDisplay('W', dimensionAverages.W);
+            updateDimensionDisplay('C', dimensionAverages.C);
+        }
+
+        function updateDimensionDisplay(dim, score) {
+            const numScore = parseFloat(score);
+            const percentage = ((numScore - 1) / 4) * 100;
+            
+            document.getElementById(`score${dim}`).textContent = score;
+            document.getElementById(`fill${dim}`).style.width = percentage + '%';
+            document.getElementById(`marker${dim}`).style.left = percentage + '%';
+            
+            document.getElementById(`desc${dim}`).textContent = getDimensionDescription(dim, numScore);
+        }
+
+        function getDimensionDescription(dim, score) {
+            if (dim === 'E') {
+                if (score <= 1.8) return '你是典型的内向能量型，独处是你最好的充电方式。你享受一个人的时光，在安静中获得内心的平静与力量。';
+                if (score <= 2.6) return '你是偏内向的能量型，虽然也能享受社交，但更偏爱小范围的深度交流。';
+                if (score <= 3.4) return '你是平衡型的能量取向，既能享受独处，也能在社交中找到乐趣，适应性很强。';
+                if (score <= 4.2) return '你是偏外向的能量型，与人交往能让你感到精力充沛，喜欢在人群中找到存在感。';
+                return '你是典型的外向能量型，社交是你的能量源泉，越热闹的场合越能让你感到兴奋。';
+            }
+            
+            if (dim === 'S') {
+                if (score <= 1.8) return '你是低刺激耐受型，偏爱稳定舒适的环境，不喜欢冒险和不确定性。';
+                if (score <= 2.6) return '你倾向于低刺激，更喜欢熟悉的事物，但偶尔也愿意尝试一些小变化。';
+                if (score <= 3.4) return '你是平衡型，既能享受稳定，也能接受适度的刺激和挑战。';
+                if (score <= 4.2) return '你倾向于高刺激，喜欢新鲜事物和挑战，享受生活中的不确定性。';
+                return '你是高刺激耐受型，热爱冒险和极限体验，追求强烈的感官刺激和精神冲击。';
+            }
+            
+            if (dim === 'W') {
+                if (score <= 1.8) return '你是窄圈层型，只和少数几个非常亲密的朋友保持深度联系。';
+                if (score <= 2.6) return '你倾向于窄圈层，更喜欢和熟悉的人交往，但也不排斥偶尔认识新朋友。';
+                if (score <= 3.4) return '你是平衡型，既重视核心好友，也愿意拓展社交圈，享受不同类型的人际关系。';
+                if (score <= 4.2) return '你倾向于广圈层，喜欢结识不同领域的人，社交圈子多元而丰富。';
+                return '你是广圈层型，社交达人，能轻松和各种人建立联系，朋友遍布各个领域。';
+            }
+            
+            if (dim === 'C') {
+                if (score <= 1.8) return '你是内向表达型，习惯把情绪藏在心里，更愿意独自消化和思考。';
+                if (score <= 2.6) return '你倾向于内向表达，虽然不会完全封闭自己，但更擅长倾听而非倾诉。';
+                if (score <= 3.4) return '你是平衡型，既能表达自己的情绪，也懂得倾听和理解他人。';
+                if (score <= 4.2) return '你倾向于外向表达，情绪来得快去得也快，喜欢和他人分享自己的感受。';
+                return '你是外向表达型，喜怒哀乐都写在脸上，是朋友圈里的"气氛制造机"。';
+            }
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('homePage').classList.add('active');
+            document.getElementById('floatingCharacters').style.display = 'block';
+            document.getElementById('flashlightBeam').style.display = 'block';
+
+        }
+
+        createStars();
+    </script>
+</body>
+</html>
